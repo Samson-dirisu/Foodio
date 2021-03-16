@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "751991016773",
+    "firebase_url": "https://flutter-board-app-76fad.firebaseio.com",
+    "project_id": "flutter-board-app-76fad",
+    "storage_bucket": "flutter-board-app-76fad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751991016773:android:c096eb1140dbb1a817822c",
+        "android_client_info": {
+          "package_name": "com.example.foodio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751991016773-edrrf7b0vlqhp8bao3vogfgq88el4ajf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfvuZ1tn4lVF2qW7FcWo0CMCsgRR08C4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751991016773-edrrf7b0vlqhp8bao3vogfgq88el4ajf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751991016773:android:a2d16e9252cbca0717822c",
+        "android_client_info": {
+          "package_name": "com.example.quakeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751991016773-edrrf7b0vlqhp8bao3vogfgq88el4ajf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfvuZ1tn4lVF2qW7FcWo0CMCsgRR08C4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751991016773-edrrf7b0vlqhp8bao3vogfgq88el4ajf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

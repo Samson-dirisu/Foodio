@@ -1,13 +1,27 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:foodio/screens/home_screen.dart';
-import 'package:foodio/screens/onboarding_screen.dart';
-import 'package:foodio/screens/register_screen.dart';
+import 'package:foodio/providers/auth_provider.dart';
+import 'package:foodio/providers/location_provider.dart';
+import 'package:foodio/screens/Home/home_screen.dart';
+import 'package:foodio/screens/map_screen.dart';
+import 'package:foodio/screens/splash_screen.dart';
 import 'package:foodio/screens/welcome_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => LocationProvider()),
+      ],
+      builder: (context, child) {
+        return MyApp();
+      },
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -19,59 +33,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.deepOrangeAccent,
       ),
-      home: SplashScreen(),
-    );
-  }
-}
-
-// Splash screen
-class SplashScreen extends StatefulWidget {
-  @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Timer(
-      Duration(seconds: 3),
-      () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => WelcomeScreen(),
-          ),
-        );
+      initialRoute: SplashScreen.id,
+      routes: {
+        SplashScreen.id : (context) => SplashScreen(),
+        HomeScreen.id: (context) => HomeScreen(),
+        WelcomeScreen.id: (context) => WelcomeScreen(),
+        MapScreen.id : (context) => MapScreen(),
       },
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Hero(
-                tag: 'logo',
-                child: Image.asset("images/logo.png"),
-              ),
-              Text(
-                "Foodio",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 19.0
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
-// start 06:59
+
+// chapter 6 of foodio 10:56
