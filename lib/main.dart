@@ -32,17 +32,17 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.deepOrangeAccent,
+        
       ),
       initialRoute: SplashScreen.id,
       routes: {
-        SplashScreen.id : (context) => SplashScreen(),
+        SplashScreen.id: (context) => SplashScreen(),
         HomeScreen.id: (context) => HomeScreen(),
         WelcomeScreen.id: (context) => WelcomeScreen(),
-        MapScreen.id : (context) => MapScreen(),
+        MapScreen.id: (context) => MapScreen(),
       },
     );
   }
 }
 
-
-// chapter 6 of foodio 10:56
+// chapter 8 of foodio 13:23

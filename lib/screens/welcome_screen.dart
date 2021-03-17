@@ -6,14 +6,21 @@ import 'package:provider/provider.dart';
 
 import 'map_screen.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   static const String id = "welcome-screen";
+
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     bool _validPhoneNumber = false;
     var _phoneNumberController = TextEditingController();
 
+    // method to build bottom sheet
     void showBottomSheet(BuildContext context) {
       showModalBottomSheet(
         backgroundColor: Colors.transparent,
@@ -107,19 +114,34 @@ class WelcomeScreen extends StatelessWidget {
                                 color: _validPhoneNumber
                                     ? Theme.of(context).primaryColor
                                     : Colors.grey,
-                                child: Text(
-                                  _validPhoneNumber
-                                      ? "CONTINUE"
-                                      : "ENTER YOUR PHONE NUMBER",
-                                  style: TextStyle(color: Colors.white),
-                                ),
+                                child: authProvider.loading
+                                    ? CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation(
+                                            Colors.white))
+                                    : Text(
+                                        _validPhoneNumber
+                                            ? "CONTINUE"
+                                            : "ENTER YOUR PHONE NUMBER",
+                                        style: TextStyle(color: Colors.white)),
+
+                                // onpressed function
                                 onPressed: () async {
+                                  myState(() {
+                                    authProvider.loading = true;
+                                  });
+
                                   String number =
                                       "+234${_phoneNumberController.text}";
                                   await authProvider
-                                      .verifyPhone(context, number)
+                                      .verifyPhone(
+                                    context: context,
+                                    number: _phoneNumberController.text,
+                                  )
                                       .then((value) {
                                     _phoneNumberController.clear();
+                                  });
+                                  myState(() {
+                                    authProvider.loading = false;
                                   });
                                 },
                               ),
@@ -152,16 +174,31 @@ class WelcomeScreen extends StatelessWidget {
                 SizedBox(height: 20),
                 FlatButton(
                     onPressed: () async {
+                      setState(() {
+                        locationData.loading = true;
+                      });
                       await locationData.getCurrenPosition();
                       if (locationData.permissionAllowed) {
                         Navigator.pushReplacementNamed(context, MapScreen.id);
-                      
+                        setState(() {
+                          locationData.loading = false;
+                        });
+                      } else {
+                        print("permission denied");
+                        setState(() {
+                          locationData.loading = true;
+                        });
                       }
+                      authProvider.getCurrentUser();
                     },
-                    child: Text(
-                      "SET DELIVERY LOCATION",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: locationData.loading
+                        ? CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                          )
+                        : Text(
+                            "SET DELIVERY LOCATION",
+                            style: TextStyle(color: Colors.white),
+                          ),
                     color: Colors.deepOrangeAccent),
                 SizedBox(height: 20),
                 FlatButton(

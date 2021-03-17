@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,23 +13,42 @@ class AuthProvider with ChangeNotifier {
   String verificationId;
   String error = "";
   UserServices _userServices = UserServices();
+  bool loading = false;
+  bool _isLoggedIn = false;
+  User _user;
 
-  Future<void> verifyPhone(BuildContext context, String number) async {
+  // getters
+  bool get isLoggedIn => _isLoggedIn;
+  User get user => _user;
+
+  // function to verify if OTP and phone number matches the one in firebase
+Future<void> verifyPhone({BuildContext context, String number, double latitude, double longitude, String address,}) async {
+    this.loading = true;
+    notifyListeners();
+
+    // verification complete
     final PhoneVerificationCompleted verificationCompleted =
         (PhoneAuthCredential credential) async {
+      loading = false;
+      notifyListeners();
       await _auth.signInWithCredential(credential);
     };
 
+    // verification failed
     final PhoneVerificationFailed verificationFailed =
         (FirebaseAuthException e) {
       print(e.code);
+      this.loading = false;
+      this.error = e.toString();
+      notifyListeners();
     };
 
+    // send OTP
     final PhoneCodeSent smsOtpsend = (String verId, int resendToken) async {
       this.verificationId = verId;
 
       // dialog to enter received OTP SMS
-      smsOtpDialog(context, number);
+      smsOtpDialog(context, number, latitude, longitude, address);
     };
     try {
       _auth.verifyPhoneNumber(
@@ -41,13 +61,16 @@ class AuthProvider with ChangeNotifier {
           notifyListeners();
         },
       );
+      ;
     } catch (e) {
+      this.error = e.toString();
+      notifyListeners();
       print(e);
     }
   }
 
   // dialog to recieve OTP
-  Future<bool> smsOtpDialog(BuildContext context, String number) {
+  Future<bool> smsOtpDialog(BuildContext context, String number, double latitude, double longitude, String address) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -88,9 +111,9 @@ class AuthProvider with ChangeNotifier {
                       (await _auth.signInWithCredential(phoneAuthCredential))
                           .user;
 
-                  // create user data in firestore after user successfully registered,
-
-                  // navigate to home screen after Login
+                  /**  create user data in firestore after user successfully registered,
+                   * navigate to home screen after Login
+                  */
                   if (user != null) {
                     _createUser(uid: user.uid, number: user.phoneNumber);
                     // Nav.pop(context: context);
@@ -115,7 +138,50 @@ class AuthProvider with ChangeNotifier {
     );
   }
 
-  void _createUser({String uid, String number}) async {
-    await _userServices.createUser({"id": uid, "number": number});
+  // function that would create user by calling userservices method creatUser
+  void _createUser({
+    String uid,
+    String number,
+    double latitude,
+    double longitude,
+    String address,
+  }) async {
+    await _userServices.createUser({
+      "id": uid,
+      "number": number,
+      "address": address,
+      "location": GeoPoint(latitude, longitude),
+    });
+  }
+
+  /** function to update user data by calling updateUserData method from 
+   * userservice 
+  */
+  void updateUser({
+    String uid,
+    String number,
+    double latitude,
+    double longitude,
+    String address,
+  }) async {
+    await _userServices.updataUserData({
+      "id": uid,
+      "number": number,
+      "address": address,
+      "location": GeoPoint(latitude, longitude),
+    });
+  }
+
+  void getCurrentUser() {
+    User user = _auth.currentUser;
+    if (user != null) {
+      _isLoggedIn = true;
+      this._user = user;
+      notifyListeners();
+    } else {
+      _isLoggedIn = false;
+      notifyListeners();
+    }
+    
   }
 }

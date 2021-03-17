@@ -13,17 +13,28 @@ class HomeScreen extends StatelessWidget {
     Nav _nav = Nav();
     return Scaffold(
       body: Center(
-        child: RaisedButton(
-          onPressed: () {
-            authProvider.error = '';
-            FirebaseAuth.instance.signOut().then(
-                  (value) => _nav.pushReplacement(
-                    context: context,
-                    destination: WelcomeScreen(),
-                  ),
-                );
-          },
-          child: Text("Sign out"),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RaisedButton(
+              onPressed: () {
+                authProvider.error = '';
+                FirebaseAuth.instance.signOut().then(
+                      (value) => _nav.pushReplacement(
+                        context: context,
+                        destination: WelcomeScreen(),
+                      ),
+                    );
+              },
+              child: Text("Sign out"),
+            ),
+            RaisedButton(
+              onPressed: () {
+                _nav.push(context: context, destination: WelcomeScreen());
+              },
+              child: Text("Sign out"),
+            ),
+          ],
         ),
       ),
     );

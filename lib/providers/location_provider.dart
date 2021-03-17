@@ -8,6 +8,7 @@ class LocationProvider with ChangeNotifier {
   double latitude;
   double longitude;
   bool permissionAllowed = false;
+  bool loading = false;
   var selectedAddress;
 
   Future<void> getCurrenPosition() async {
@@ -16,6 +17,11 @@ class LocationProvider with ChangeNotifier {
     if (position != null) {
       this.latitude = position.latitude;
       this.longitude = position.longitude;
+
+      final coordinates = new Coordinates(this.latitude, this.longitude);
+      final addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      this.selectedAddress = addresses.first;
       this.permissionAllowed = true;
       notifyListeners();
     } else {
@@ -34,6 +40,7 @@ class LocationProvider with ChangeNotifier {
     final addresses =
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
     this.selectedAddress = addresses.first;
-    print("${this.selectedAddress.featureName} : ${this.selectedAddress.addressLine}");
+    print(
+        "${this.selectedAddress.featureName} : ${this.selectedAddress.addressLine}");
   }
 }
