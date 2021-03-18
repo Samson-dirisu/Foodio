@@ -88,50 +88,52 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: AbsorbPointer(
-                        absorbing: _validPhoneNumber ? false : true,
-                        child: FlatButton(
-                          padding: EdgeInsets.all(0),
-                          color: _validPhoneNumber
-                              ? Theme.of(context).primaryColor
-                              : Colors.grey,
-                          child: authProvider.loading
-                              ? CircularProgressIndicator(
-                                  valueColor:
-                                      AlwaysStoppedAnimation(Colors.white))
-                              : Text(
-                                  _validPhoneNumber
-                                      ? "CONTINUE"
-                                      : "ENTER YOUR PHONE NUMBER",
-                                  style: TextStyle(color: Colors.white)),
+                      child: Container(
+                        child: AbsorbPointer(
+                          absorbing: _validPhoneNumber ? false : true,
+                          child: FlatButton(
+                            padding: EdgeInsets.all(0),
+                            color: _validPhoneNumber
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey,
+                            child: authProvider.loading
+                                ? CircularProgressIndicator(
+                                    valueColor:
+                                        AlwaysStoppedAnimation(Colors.white))
+                                : Text(
+                                    _validPhoneNumber
+                                        ? "CONTINUE"
+                                        : "ENTER YOUR PHONE NUMBER",
+                                    style: TextStyle(color: Colors.white)),
 
-                          // onpressed function
-                          onPressed: () async {
-                            setState(() {
-                              authProvider.loading = true;
-                            });
+                            // onpressed function
+                            onPressed: () async {
+                              setState(() {
+                                authProvider.loading = true;
+                              });
 
-                            String number =
-                                "+234${_phoneNumberController.text}";
-                            await authProvider
-                                .verifyPhone(
-                              context: context,
-                              number: _phoneNumberController.text,
-                              latitude: locationData.latitude,
-                              longitude: locationData.longitude,
-                              address: locationData.selectedAddress.addressLine,
-                            )
-                                .then((value) {
-                              _phoneNumberController.clear();
-                              _nav.pushReplacement(
+                              String number =
+                                  "+234${_phoneNumberController.text}";
+                              await authProvider
+                                  .verifyPhone(
                                 context: context,
-                                destination: HomeScreen(),
-                              );
-                            });
-                            setState(() {
-                              authProvider.loading = false;
-                            });
-                          },
+                                number: _phoneNumberController.text,
+                                latitude: locationData.latitude,
+                                longitude: locationData.longitude,
+                                address: locationData.selectedAddress.addressLine,
+                              )
+                                  .then((value) {
+                                _phoneNumberController.clear();
+                                _nav.pushReplacement(
+                                  context: context,
+                                  destination: HomeScreen(),
+                                );
+                              });
+                              setState(() {
+                                authProvider.loading = false;
+                              });
+                            },
+                          ),
                         ),
                       ),
                     ),
