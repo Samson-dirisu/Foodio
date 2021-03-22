@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     );
               },
-              child: Text("Sign out"),
+              child: Text("real Sign out"),
             ),
             RaisedButton(
               onPressed: () {

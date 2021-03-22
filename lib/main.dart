@@ -30,10 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.deepOrangeAccent,
-        
-      ),
+      theme: ThemeData(primaryColor: Colors.deepOrangeAccent),
       initialRoute: SplashScreen.id,
       routes: {
         SplashScreen.id: (context) => SplashScreen(),
@@ -45,4 +42,4 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// chapter 8 of foodio 13:23
+// chapter 8 of foodio 44:00 4.1.2+1

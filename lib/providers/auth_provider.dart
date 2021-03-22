@@ -3,26 +3,30 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:foodio/helper/navigator.dart';
+import 'package:foodio/providers/location_provider.dart';
 import 'package:foodio/screens/Home/home_screen.dart';
+import 'package:foodio/screens/map_screen.dart';
 import 'package:foodio/services/user_service.dart';
 
 class AuthProvider with ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
+  UserServices _userServices = UserServices();
+  LocationProvider locationData = LocationProvider();
   Nav _nav = Nav();
   String smsOtp;
   String verificationId;
   String error = "";
-  UserServices _userServices = UserServices();
   bool loading = false;
   bool _isLoggedIn = false;
   User _user;
+  String screen;
 
   // getters
   bool get isLoggedIn => _isLoggedIn;
   User get user => _user;
 
   // function to verify if OTP and phone number matches the one in firebase
-Future<void> verifyPhone({BuildContext context, String number, double latitude, double longitude, String address,}) async {
+  Future<void> verifyPhone({BuildContext context, String number}) async {
     this.loading = true;
     notifyListeners();
 
@@ -48,7 +52,7 @@ Future<void> verifyPhone({BuildContext context, String number, double latitude, 
       this.verificationId = verId;
 
       // dialog to enter received OTP SMS
-      smsOtpDialog(context, number, latitude, longitude, address);
+      smsOtpDialog(context, number);
     };
     try {
       _auth.verifyPhoneNumber(
@@ -70,7 +74,7 @@ Future<void> verifyPhone({BuildContext context, String number, double latitude, 
   }
 
   // dialog to recieve OTP
-  Future<bool> smsOtpDialog(BuildContext context, String number, double latitude, double longitude, String address) {
+  Future<bool> smsOtpDialog(BuildContext context, String number) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -110,22 +114,39 @@ Future<void> verifyPhone({BuildContext context, String number, double latitude, 
                   final User user =
                       (await _auth.signInWithCredential(phoneAuthCredential))
                           .user;
-
-                  /**  create user data in firestore after user successfully registered,
-                   * navigate to home screen after Login
-                  */
                   if (user != null) {
-                    _createUser(uid: user.uid, number: user.phoneNumber);
-                    // Nav.pop(context: context);
+                    this.loading = false;
+                    notifyListeners();
 
-                    // don't want to come back to welcome screen after Logged in
-                    _nav.pushReplacement(
-                        context: context, destination: HomeScreen());
+                    _userServices.getUserById(user.uid).then((snapshot) {
+                      if (snapshot.exists) {
+                        // user already exists
+                        if (this.screen == 'Login') {
+                          _nav.pushReplacement(
+                            context: context,
+                            destination: HomeScreen(),
+                          );
+                        } else {
+                          _nav.pushReplacement(
+                            context: context,
+                            destination: MapScreen(),
+                          );
+                        }
+                      } else {
+                        // user does not exists and needs to be created
+                        _createUser(id: user.uid, number: user.phoneNumber);
+                        _nav.pushReplacement(
+                          context: context,
+                          destination: HomeScreen(),
+                        );
+                      }
+                    });
                   } else {
-                    print('login failed');
+                    print("login failed");
                   }
                 } catch (e) {
                   this.error = "invalid OTP";
+                  this.loading = false;
                   notifyListeners();
                   print(e.toString());
                   _nav.pop(context);
@@ -135,43 +156,46 @@ Future<void> verifyPhone({BuildContext context, String number, double latitude, 
           ],
         );
       },
-    );
+    ).whenComplete(() {
+      this.loading = false;
+      notifyListeners();
+    });
   }
 
   // function that would create user by calling userservices method creatUser
-  void _createUser({
-    String uid,
-    String number,
-    double latitude,
-    double longitude,
-    String address,
-  }) async {
+  void _createUser({String id, String number}) async {
     await _userServices.createUser({
-      "id": uid,
+      "id": id,
       "number": number,
-      "address": address,
-      "location": GeoPoint(latitude, longitude),
+      "latitude": locationData.latitude,
+      "longitude": locationData.longitude,
+      "address": locationData.selectedAddress == null
+          ? locationData.selectedAddress
+          : locationData.selectedAddress.addressLine
     });
   }
 
-  /** function to update user data by calling updateUserData method from 
-   * userservice 
-  */
+  //function to update user data by calling updateUserData method from
+  // userservice
+
   void updateUser({
-    String uid,
+    String id,
     String number,
+    String address,
     double latitude,
     double longitude,
-    String address,
   }) async {
     await _userServices.updataUserData({
-      "id": uid,
+      "id": id,
       "number": number,
       "address": address,
       "location": GeoPoint(latitude, longitude),
     });
+    this.loading = false;
+    notifyListeners();
   }
 
+  // function resposible for getting current user to the provider
   void getCurrentUser() {
     User user = _auth.currentUser;
     if (user != null) {
@@ -182,6 +206,5 @@ Future<void> verifyPhone({BuildContext context, String number, double latitude, 
       _isLoggedIn = false;
       notifyListeners();
     }
-    
   }
 }

@@ -135,7 +135,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                   await authProvider
                                       .verifyPhone(
                                     context: context,
-                                    number: _phoneNumberController.text,
+                                    number: number,
                                   )
                                       .then((value) {
                                     _phoneNumberController.clear();
@@ -156,7 +156,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             );
           },
         ),
-      );
+      ).whenComplete(() {
+        setState(() {
+          authProvider.loading = false;
+          _phoneNumberController.clear();
+        });
+      });
     }
 
     final locationData = Provider.of<LocationProvider>(context, listen: false);
@@ -172,37 +177,48 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Text('Ready to order from your nearest shop',
                     style: TextStyle(color: Colors.grey)),
                 SizedBox(height: 20),
-                FlatButton(
-                    onPressed: () async {
-                      setState(() {
-                        locationData.loading = true;
-                      });
-                      await locationData.getCurrenPosition();
-                      if (locationData.permissionAllowed) {
-                        Navigator.pushReplacementNamed(context, MapScreen.id);
-                        setState(() {
-                          locationData.loading = false;
-                        });
-                      } else {
-                        print("permission denied");
-                        setState(() {
-                          locationData.loading = true;
-                        });
-                      }
-                      authProvider.getCurrentUser();
-                    },
-                    child: locationData.loading
-                        ? CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation(Colors.white),
-                          )
-                        : Text(
-                            "SET DELIVERY LOCATION",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                    color: Colors.deepOrangeAccent),
+                Row(
+                  children: [
+                    Expanded(
+                      child: FlatButton(
+                          onPressed: () async {
+                            setState(() {
+                              locationData.loading = true;
+                            });
+                            await locationData.getCurrenPosition();
+                            if (locationData.permissionAllowed) {
+                              Navigator.pushReplacementNamed(
+                                  context, MapScreen.id);
+                              setState(() {
+                                locationData.loading = false;
+                              });
+                            } else {
+                              print("permission denied");
+                              setState(() {
+                                locationData.loading = true;
+                              });
+                            }
+                            authProvider.getCurrentUser();
+                          },
+                          child: locationData.loading
+                              ? CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation(Colors.white),
+                                )
+                              : Text(
+                                  "SET DELIVERY LOCATION",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                          color: Colors.deepOrangeAccent),
+                    ),
+                  ],
+                ),
                 SizedBox(height: 20),
                 FlatButton(
                   onPressed: () {
+                    setState(() {
+                      authProvider.screen = 'login';
+                    });
                     showBottomSheet(context);
                   },
                   child: RichText(

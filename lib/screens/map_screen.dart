@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:foodio/helper/navigator.dart';
 import 'package:foodio/providers/auth_provider.dart';
 import 'package:foodio/providers/location_provider.dart';
+import 'package:foodio/screens/Home/home_screen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +46,7 @@ class _MapScreenState extends State<MapScreen> {
               zoomControlsEnabled: false,
               minMaxZoomPreference: MinMaxZoomPreference(1.5, 20.8),
               myLocationButtonEnabled: true,
+              myLocationEnabled: true,
               mapType: MapType.normal,
               mapToolbarEnabled: true,
               onCameraMove: (CameraPosition position) {
@@ -66,6 +68,12 @@ class _MapScreenState extends State<MapScreen> {
                 height: 50,
                 margin: EdgeInsets.only(bottom: 40),
                 child: Image.asset("images/marker.png", color: Colors.black),
+              ),
+            ),
+            Center(
+              child: SpinKitPulse(
+                color: Colors.black54,
+                size: 100.0,
               ),
             ),
             Positioned(
@@ -136,13 +144,18 @@ class _MapScreenState extends State<MapScreen> {
                                 );
                               } else {
                                 authProvider.updateUser(
-                                  uid: authProvider.user.uid,
+                                  id: authProvider.user.uid,
                                   number: authProvider.user.phoneNumber,
                                   latitude: locationData.latitude,
                                   longitude: locationData.longitude,
                                   address : locationData.selectedAddress.addressLine
                                 );
+                                _nav.push(
+                                  context: context,
+                                  destination: HomeScreen(),
+                                );
                               }
+
                             },
                           ),
                         ),

@@ -114,19 +114,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             String number =
                                 "+234${_phoneNumberController.text}";
                             await authProvider
-                                .verifyPhone(
-                              context: context,
-                              number: _phoneNumberController.text,
-                              latitude: locationData.latitude,
-                              longitude: locationData.longitude,
-                              address: locationData.selectedAddress.addressLine,
-                            )
+                                .verifyPhone(context: context,number: number)
                                 .then((value) {
                               _phoneNumberController.clear();
-                              _nav.pushReplacement(
-                                context: context,
-                                destination: HomeScreen(),
-                              );
+                              
                             });
                             setState(() {
                               authProvider.loading = false;
