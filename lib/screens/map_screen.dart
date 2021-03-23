@@ -67,7 +67,7 @@ class _MapScreenState extends State<MapScreen> {
               child: Container(
                 height: 50,
                 margin: EdgeInsets.only(bottom: 40),
-                child: Image.asset("images/marker.png", color: Colors.black),
+                child: Image.asset("images/marker.png"),
               ),
             ),
             Center(
@@ -137,25 +137,43 @@ class _MapScreenState extends State<MapScreen> {
                               style: TextStyle(color: Colors.white),
                             ),
                             onPressed: () {
+                              // save address in Shared Preferences
+                              locationData.savePrefs();
+
                               if (authProvider.isLoggedIn == false) {
                                 _nav.push(
                                   context: context,
                                   destination: LoginScreen(),
                                 );
                               } else {
+                                setState(() {
+                                  authProvider.latitude = locationData.latitude;
+                                  authProvider.longitude =
+                                      locationData.longitude;
+                                  authProvider.address =
+                                      locationData.selectedAddress.addressLine;
+                                });
                                 authProvider.updateUser(
                                   id: authProvider.user.uid,
                                   number: authProvider.user.phoneNumber,
-                                  latitude: locationData.latitude,
-                                  longitude: locationData.longitude,
-                                  address : locationData.selectedAddress.addressLine
                                 );
-                                _nav.push(
-                                  context: context,
-                                  destination: HomeScreen(),
-                                );
-                              }
+                                //     .then(
+                                //   (value) {
+                                //     if (value) {
+                                //       _nav.push(
+                                //         context: context,
+                                //         destination: HomeScreen(),
+                                //       );
+                                //     }
+                                //   },
+                                // );
 
+                                // get location stored in Shared Preferences
+                                locationData.getPrefs();
+                                _nav.push(
+                                    context: context,
+                                    destination: HomeScreen());
+                              }
                             },
                           ),
                         ),

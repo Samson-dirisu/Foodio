@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:foodio/helper/navigator.dart';
 import 'package:foodio/screens/welcome_screen.dart';
 
 import 'Home/home_screen.dart';
@@ -14,8 +13,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  Nav _nav = Nav();
   Timer _timer;
+
+  // what should be done before any widget
   @override
   void initState() {
     _timer = Timer(
@@ -33,7 +33,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
     super.initState();
   }
-
+  
+  // dispose timer to avoid conflict
   @override
   void dispose() {
     if (_timer != null) {

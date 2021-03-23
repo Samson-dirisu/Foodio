@@ -37,6 +37,7 @@ dependencies:
   geolocator: ^6.2.1
   geocoder: ^0.2.1
   flutter_spinkit: ^4.1.2+1
+  shared_preferences: ^0.5.12+4
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +81,16 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+  fonts:
+    - family: Lato
+      fonts: 
+        - asset: fonts/Lato-Bold.ttf
+          weight: 700
+        - asset: fonts/Lato-Regular.ttf
+
+    - family: Anton
+      fonts: 
+        - asset: fonts/Anton-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

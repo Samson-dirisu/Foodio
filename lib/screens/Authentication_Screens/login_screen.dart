@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:foodio/helper/navigator.dart';
 import 'package:foodio/providers/auth_provider.dart';
 import 'package:foodio/providers/location_provider.dart';
-import 'package:foodio/screens/Home/home_screen.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -109,18 +108,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () async {
                             setState(() {
                               authProvider.loading = true;
+                              authProvider.screen = 'MapScreen';
+                              authProvider.latitude = locationData.latitude;
+                              authProvider.longitude = locationData.longitude;
+                              authProvider.address = locationData.selectedAddress.addressLine;
                             });
 
                             String number =
                                 "+234${_phoneNumberController.text}";
                             await authProvider
-                                .verifyPhone(context: context,number: number)
+                                .verifyPhone(
+                              context: context,
+                              number: number,
+                            )
                                 .then((value) {
                               _phoneNumberController.clear();
-                              
-                            });
-                            setState(() {
-                              authProvider.loading = false;
+                              setState(() {
+                                authProvider.loading = false;
+                              });
                             });
                           },
                         ),

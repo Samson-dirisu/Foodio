@@ -208,8 +208,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               : Text(
                                   "SET DELIVERY LOCATION",
                                   style: TextStyle(color: Colors.white),
-                                ),
-                          color: Colors.deepOrangeAccent),
+                                ), 
+                                color: Theme.of(context).primaryColor,),
                     ),
                   ],
                 ),
@@ -245,7 +245,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 onPressed: () {},
                 child: Text(
                   "Skip",
-                  style: TextStyle(color: Colors.deepOrangeAccent),
+                  style: TextStyle(color: Theme.of(context).primaryColor),
                 ),
               ),
             ),

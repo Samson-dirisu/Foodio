@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
-import 'package:foodio/models/user_model.dart';
 
 class UserServices {
   String collection = "users";

@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:foodio/helper/navigator.dart';
 import 'package:foodio/providers/location_provider.dart';
 import 'package:foodio/screens/Home/home_screen.dart';
-import 'package:foodio/screens/map_screen.dart';
 import 'package:foodio/services/user_service.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -20,13 +18,19 @@ class AuthProvider with ChangeNotifier {
   bool _isLoggedIn = false;
   User _user;
   String screen;
+  double latitude;
+  double longitude;
+  String address;
 
   // getters
   bool get isLoggedIn => _isLoggedIn;
   User get user => _user;
 
   // function to verify if OTP and phone number matches the one in firebase
-  Future<void> verifyPhone({BuildContext context, String number}) async {
+  Future<void> verifyPhone({
+    BuildContext context,
+    String number,
+  }) async {
     this.loading = true;
     notifyListeners();
 
@@ -51,7 +55,7 @@ class AuthProvider with ChangeNotifier {
     final PhoneCodeSent smsOtpsend = (String verId, int resendToken) async {
       this.verificationId = verId;
 
-      // dialog to enter received OTP SMS
+      // dialog box to enter received OTP SMS
       smsOtpDialog(context, number);
     };
     try {
@@ -65,7 +69,6 @@ class AuthProvider with ChangeNotifier {
           notifyListeners();
         },
       );
-      ;
     } catch (e) {
       this.error = e.toString();
       notifyListeners();
@@ -74,7 +77,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   // dialog to recieve OTP
-  Future<bool> smsOtpDialog(BuildContext context, String number) {
+  Future smsOtpDialog(BuildContext context, String number) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -127,9 +130,12 @@ class AuthProvider with ChangeNotifier {
                             destination: HomeScreen(),
                           );
                         } else {
+                          print(
+                              "xxxx\nxxxxxxx\nxxxxxx\nxxxxx\n ${locationData.latitude} : ${locationData.longitude}");
+                          updateUser(id: user.uid, number: user.phoneNumber);
                           _nav.pushReplacement(
                             context: context,
-                            destination: MapScreen(),
+                            destination: HomeScreen(),
                           );
                         }
                       } else {
@@ -167,29 +173,21 @@ class AuthProvider with ChangeNotifier {
     await _userServices.createUser({
       "id": id,
       "number": number,
-      "latitude": locationData.latitude,
-      "longitude": locationData.longitude,
-      "address": locationData.selectedAddress == null
-          ? locationData.selectedAddress
-          : locationData.selectedAddress.addressLine
+      "latitude": this.latitude,
+      "longitude": this.longitude,
+      "address": this.address,
     });
   }
 
   //function to update user data by calling updateUserData method from
   // userservice
-
-  void updateUser({
-    String id,
-    String number,
-    String address,
-    double latitude,
-    double longitude,
-  }) async {
-    await _userServices.updataUserData({
+  void updateUser({String id, String number}) async {
+   await  _userServices.updataUserData({
       "id": id,
       "number": number,
-      "address": address,
-      "location": GeoPoint(latitude, longitude),
+      "latitude": this.latitude,
+      "longitude": this.longitude,
+      "address": this.address,
     });
     this.loading = false;
     notifyListeners();
@@ -207,4 +205,4 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-}
+} // shared_preferences: ^0.5.12+4

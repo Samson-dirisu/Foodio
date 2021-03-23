@@ -30,7 +30,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primaryColor: Colors.deepOrangeAccent),
+      theme: ThemeData(
+        primaryColor: Color(0xff84c225),
+        fontFamily: "Lato"
+      ),
       initialRoute: SplashScreen.id,
       routes: {
         SplashScreen.id: (context) => SplashScreen(),

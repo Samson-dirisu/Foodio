@@ -67,7 +67,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 activeShape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
                 ),
-                activeColor: Colors.deepOrangeAccent),
+                activeColor: Theme.of(context).primaryColor),
           ),
           SizedBox(height: 20.0),
         ],
