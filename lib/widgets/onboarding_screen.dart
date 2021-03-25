@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:foodio/helper/constant.dart';
+import 'package:foodio/widgets/dot_indicator.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override
@@ -58,17 +59,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
           SizedBox(height: 20.0),
-          DotsIndicator(
-            dotsCount: _pages.length,
-            position: _currentPage.toDouble(),
-            decorator: DotsDecorator(
-                size: const Size.square(9.0),
-                activeSize: const Size(18.0, 9.0),
-                activeShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                activeColor: Theme.of(context).primaryColor),
-          ),
+          // DotsIndicator(
+          //   dotsCount: _pages.length,
+          //   position: _currentPage.toDouble(),
+          //   decorator: DotsDecorator(
+          //       size: const Size.square(9.0),
+          //       activeSize: const Size(18.0, 9.0),
+          //       activeShape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(5.0),
+          //       ),
+          //       activeColor: Theme.of(context).primaryColor),
+          // ),
+          DotIndicator(count: _pages.length, currentPage: _currentPage),
           SizedBox(height: 20.0),
         ],
       );

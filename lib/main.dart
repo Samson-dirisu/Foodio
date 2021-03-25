@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodio/providers/app_provider.dart';
 import 'package:foodio/providers/auth_provider.dart';
 import 'package:foodio/providers/location_provider.dart';
 import 'package:foodio/screens/Home/home_screen.dart';
@@ -15,7 +16,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => LocationProvider()),
+        ChangeNotifierProvider(create: (_) => LocationProvider.initialized()),
+        ChangeNotifierProvider(create: (_) => AppProvider()),
       ],
       builder: (context, child) {
         return MyApp();

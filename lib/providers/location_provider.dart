@@ -12,10 +12,19 @@ class LocationProvider with ChangeNotifier {
   bool permissionAllowed = false;
   bool loading = false;
   var selectedAddress;
+
+  // private variables
   String _location;
+  String _address;
 
   // Getters
-  String get location =>this._location;
+  String get location => this._location;
+  String get address => this._address;
+
+  // named constructor
+  LocationProvider.initialized() {
+    getPrefs();
+  }
 
   Future<void> getCurrenPosition() async {
     Position position = await Geolocator.getCurrentPosition(
@@ -51,7 +60,7 @@ class LocationProvider with ChangeNotifier {
         "${this.selectedAddress.featureName} : ${this.selectedAddress.addressLine}");
   }
 
-  // function responsible for storing location to local storage
+  // function responsible for storing location to Shared Preferences
   Future<void> savePrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -61,11 +70,13 @@ class LocationProvider with ChangeNotifier {
     prefs.setString("location", this.selectedAddress.featureName);
   }
 
+  // function to get data stored in Share Preferences
   Future getPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String location = prefs.getString("location");
+    String address = prefs.getString("address");
     this._location = location;
+    this._address = address;
     notifyListeners();
   }
 }

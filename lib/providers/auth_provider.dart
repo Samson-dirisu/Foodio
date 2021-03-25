@@ -9,7 +9,7 @@ import 'package:foodio/services/user_service.dart';
 class AuthProvider with ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
   UserServices _userServices = UserServices();
-  LocationProvider locationData = LocationProvider();
+  LocationProvider locationData;
   Nav _nav = Nav();
   String smsOtp;
   String verificationId;
@@ -182,7 +182,7 @@ class AuthProvider with ChangeNotifier {
   //function to update user data by calling updateUserData method from
   // userservice
   void updateUser({String id, String number}) async {
-   await  _userServices.updataUserData({
+    await _userServices.updataUserData({
       "id": id,
       "number": number,
       "latitude": this.latitude,
@@ -205,4 +205,4 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-} // shared_preferences: ^0.5.12+4
+}

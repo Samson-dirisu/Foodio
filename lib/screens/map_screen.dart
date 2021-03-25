@@ -139,13 +139,17 @@ class _MapScreenState extends State<MapScreen> {
                             onPressed: () {
                               // save address in Shared Preferences
                               locationData.savePrefs();
-
+                              
+                              // check if user is logged in
                               if (authProvider.isLoggedIn == false) {
                                 _nav.push(
                                   context: context,
                                   destination: LoginScreen(),
                                 );
-                              } else {
+                              }
+                               // if not logged in, save lat, lng and address to variables
+                               else {
+                                 locationData.getPrefs();
                                 setState(() {
                                   authProvider.latitude = locationData.latitude;
                                   authProvider.longitude =
