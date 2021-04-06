@@ -147,7 +147,7 @@ class _MapScreenState extends State<MapScreen> {
                                   destination: LoginScreen(),
                                 );
                               }
-                               // if not logged in, save lat, lng and address to variables
+                               // if logged in, save lat, lng and address to variables
                                else {
                                  locationData.getPrefs();
                                 setState(() {
@@ -161,19 +161,6 @@ class _MapScreenState extends State<MapScreen> {
                                   id: authProvider.user.uid,
                                   number: authProvider.user.phoneNumber,
                                 );
-                                //     .then(
-                                //   (value) {
-                                //     if (value) {
-                                //       _nav.push(
-                                //         context: context,
-                                //         destination: HomeScreen(),
-                                //       );
-                                //     }
-                                //   },
-                                // );
-
-                                // get location stored in Shared Preferences
-                                locationData.getPrefs();
                                 _nav.push(
                                     context: context,
                                     destination: HomeScreen());

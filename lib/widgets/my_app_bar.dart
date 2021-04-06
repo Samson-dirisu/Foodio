@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodio/helper/navigator.dart';
+import 'package:foodio/providers/app_provider.dart';
 import 'package:foodio/providers/location_provider.dart';
 import 'package:foodio/screens/map_screen.dart';
+import 'package:foodio/screens/welcome_screen.dart';
 import 'package:provider/provider.dart';
 
 class MyAppBar extends StatefulWidget {
@@ -10,11 +13,14 @@ class MyAppBar extends StatefulWidget {
 }
 
 class _MyAppBarState extends State<MyAppBar> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
   Nav _nav = Nav();
 
   @override
   Widget build(BuildContext context) {
     final _locationProvider = Provider.of<LocationProvider>(context);
+    final _appProvider = Provider.of<AppProvider>(context);
+
     return AppBar(
       elevation: 0.0,
       automaticallyImplyLeading: false,
@@ -47,24 +53,33 @@ class _MyAppBarState extends State<MyAppBar> {
           ],
         ),
         onPressed: () {
-          // Get the current position of the suer
-          _locationProvider.getCurrenPosition();
-
-          // check if permission is allowed
-          if (_locationProvider.permissionAllowed == true) {
-            _nav.push(context: context, destination: MapScreen());
-          } else {
-            print("permission denied");
-          }
+          _locationProvider.getCurrenPosition().then((position) {
+            if (position != null) {
+              if (_locationProvider.permissionAllowed) {
+                _nav.push(context: context, destination: MapScreen());
+              } else {
+                print("i can't move");
+              }
+            } else {
+              print("access denied");
+            }
+          });
         },
       ),
       actions: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: IconButton(
-            icon: Icon(Icons.account_circle_outlined, color: Colors.white),
-            onPressed: () {},
-          ),
+        IconButton(
+          icon: Icon(Icons.power_settings_new, color: Colors.white),
+          onPressed: () {
+            _auth.signOut();
+            _nav.pushReplacement(
+              context: context,
+              destination: WelcomeScreen(),
+            );
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.account_circle_outlined, color: Colors.white),
+          onPressed: () {},
         )
       ],
       bottom: PreferredSize(

@@ -32,7 +32,10 @@ class _ImageSliderState extends State<ImageSlider> {
             return snapshot.data == null
                 ? Center(child: CircularProgressIndicator())
                 : Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10.0,
+                     // horizontal: 20,
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -41,15 +44,19 @@ class _ImageSliderState extends State<ImageSlider> {
                           itemBuilder: (context, index, h) {
                             DocumentSnapshot sliderImage = snapshot.data[index];
                             Map getImage = sliderImage.data();
-                            return Image.network(
-                              getImage["image"],
-                              fit: BoxFit.cover,
+                            return SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: Image.network(
+                                getImage["image"],
+                                fit: BoxFit.cover,
+                              ),
                             );
                           },
                           options: CarouselOptions(
+                            viewportFraction: 1,
                             initialPage: 0,
                             autoPlay: false,
-                            height: 180,
+                            height: 140,
                             onPageChanged: (page, p) {
                               _appProvider.changePage(page);
                             },

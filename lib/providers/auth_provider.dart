@@ -9,7 +9,7 @@ import 'package:foodio/services/user_service.dart';
 class AuthProvider with ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
   UserServices _userServices = UserServices();
-  LocationProvider locationData;
+  LocationProvider locationData = LocationProvider();
   Nav _nav = Nav();
   String smsOtp;
   String verificationId;
@@ -130,8 +130,6 @@ class AuthProvider with ChangeNotifier {
                             destination: HomeScreen(),
                           );
                         } else {
-                          print(
-                              "xxxx\nxxxxxxx\nxxxxxx\nxxxxx\n ${locationData.latitude} : ${locationData.longitude}");
                           updateUser(id: user.uid, number: user.phoneNumber);
                           _nav.pushReplacement(
                             context: context,
@@ -141,6 +139,7 @@ class AuthProvider with ChangeNotifier {
                       } else {
                         // user does not exists and needs to be created
                         _createUser(id: user.uid, number: user.phoneNumber);
+                        
                         _nav.pushReplacement(
                           context: context,
                           destination: HomeScreen(),
@@ -205,4 +204,15 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  //check if user is logged in when viewing map, if not he would denied access
+  // void isPermitted() {
+  //   if (_user == null) {
+  //     locationData.permissionAllowed = false;
+  //     notifyListeners();
+  //   } else {
+  //     locationData.permissionAllowed = true;
+  //     notifyListeners();
+  //   }
+  // }
 }

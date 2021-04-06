@@ -21,26 +21,31 @@ class LocationProvider with ChangeNotifier {
   String get location => this._location;
   String get address => this._address;
 
-  // named constructor
-  LocationProvider.initialized() {
+  // constructor
+  LocationProvider() {
     getPrefs();
   }
 
-  Future<void> getCurrenPosition() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    if (position != null) {
-      this.latitude = position.latitude;
-      this.longitude = position.longitude;
+  Future<Position> getCurrenPosition() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      if (position != null) {
+        this.latitude = position.latitude;
+        this.longitude = position.longitude;
 
-      final coordinates = new Coordinates(this.latitude, this.longitude);
-      final addresses =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      this.selectedAddress = addresses.first;
-      this.permissionAllowed = true;
-      notifyListeners();
-    } else {
-      print(" permision not allowed");
+        final coordinates = new Coordinates(this.latitude, this.longitude);
+        final addresses =
+            await Geocoder.local.findAddressesFromCoordinates(coordinates);
+        this.selectedAddress = addresses.first;
+        this.permissionAllowed = true;
+        notifyListeners();
+        print("xdxdxdxdxd $permissionAllowed");
+      }
+      return position;
+    } catch (e) {
+      print("access denied");
+      return null;
     }
   }
 

@@ -5,6 +5,7 @@ class DbFunctions {
 
   Future getSliderImage() async {
     QuerySnapshot snapshot = await _firestore.collection("slider").get();
+    
     return snapshot.docs;
   }
 }

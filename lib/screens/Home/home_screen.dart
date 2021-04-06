@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodio/helper/navigator.dart';
 import 'package:foodio/providers/auth_provider.dart';
+import 'package:foodio/screens/Home/top_pick_store.dart';
 import 'package:foodio/screens/welcome_screen.dart';
 import 'package:foodio/widgets/dot_indicator.dart';
 import 'package:foodio/widgets/image_slider.dart';
@@ -16,8 +17,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // variables
   Nav _nav = Nav();
+  AuthProvider _authData = AuthProvider();
+
+  // @override
+  // void initState() {
+  //   _authData.getCurrentUser();
+  //   _authData.isPermitted();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -33,27 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           ImageSlider(),
-          RaisedButton(
-            onPressed: () {
-              authProvider.error = '';
-              FirebaseAuth.instance.signOut().then(
-                    (value) => _nav.pushReplacement(
-                      context: context,
-                      destination: WelcomeScreen(),
-                    ),
-                  );
-            },
-            child: Text("real Sign out"),
-          ),
-          RaisedButton(
-            onPressed: () {
-              _nav.push(context: context, destination: WelcomeScreen());
-            },
-            child: Text("Sign out"),
-          ),
+          Container(
+           height: 300, child: TopPickStore()),
         ],
       ),
-      
     );
   }
 }

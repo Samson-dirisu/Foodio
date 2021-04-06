@@ -16,7 +16,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => LocationProvider.initialized()),
+        ChangeNotifierProvider(create: (_) => LocationProvider()),
         ChangeNotifierProvider(create: (_) => AppProvider()),
       ],
       builder: (context, child) {
@@ -32,10 +32,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Color(0xff84c225),
-        fontFamily: "Lato"
-      ),
+      theme: ThemeData(primaryColor: Color(0xff84c225), fontFamily: "Lato"),
       initialRoute: SplashScreen.id,
       routes: {
         SplashScreen.id: (context) => SplashScreen(),
@@ -46,5 +43,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// chapter 8 of foodio 44:00 4.1.2+1
