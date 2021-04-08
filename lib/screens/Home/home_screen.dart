@@ -20,13 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Nav _nav = Nav();
   AuthProvider _authData = AuthProvider();
 
-  // @override
-  // void initState() {
-  //   _authData.getCurrentUser();
-  //   _authData.isPermitted();
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     //providers
@@ -42,7 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           ImageSlider(),
           Container(
-           height: 300, child: TopPickStore()),
+            height: 300,
+            child: TopPickStore(),
+          ),
         ],
       ),
     );

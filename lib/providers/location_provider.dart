@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:foodio/services/user_service.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
@@ -12,6 +14,9 @@ class LocationProvider with ChangeNotifier {
   bool permissionAllowed = false;
   bool loading = false;
   var selectedAddress;
+
+  UserServices _userServices = UserServices();
+  User user = FirebaseAuth.instance.currentUser;
 
   // private variables
   String _location;
@@ -40,11 +45,9 @@ class LocationProvider with ChangeNotifier {
         this.selectedAddress = addresses.first;
         this.permissionAllowed = true;
         notifyListeners();
-        print("xdxdxdxdxd $permissionAllowed");
       }
       return position;
     } catch (e) {
-      print("access denied");
       return null;
     }
   }
@@ -83,5 +86,16 @@ class LocationProvider with ChangeNotifier {
     this._location = location;
     this._address = address;
     notifyListeners();
+  }
+
+  // Function to get the distance between places
+  void getDistance(AsyncSnapshot snapshot) {
+    _userServices.getUserById(user.uid).then((restult) {
+      if (user != null) {}
+    });
+    List shopDistanc = [];
+    for (int i = 0; i <= snapshot.data.docs.length; i++) {
+      // var distance = Geolocator.distanceBetween();
+    }
   }
 }

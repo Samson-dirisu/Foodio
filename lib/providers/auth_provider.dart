@@ -7,20 +7,22 @@ import 'package:foodio/screens/Home/home_screen.dart';
 import 'package:foodio/services/user_service.dart';
 
 class AuthProvider with ChangeNotifier {
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  UserServices _userServices = UserServices();
   LocationProvider locationData = LocationProvider();
-  Nav _nav = Nav();
   String smsOtp;
   String verificationId;
   String error = "";
   bool loading = false;
-  bool _isLoggedIn = false;
-  User _user;
   String screen;
   double latitude;
   double longitude;
   String address;
+
+  // Private variables;
+  User _user;
+  Nav _nav = Nav();
+  bool _isLoggedIn = false;
+  UserServices _userServices = UserServices();
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
   // getters
   bool get isLoggedIn => _isLoggedIn;
@@ -122,8 +124,8 @@ class AuthProvider with ChangeNotifier {
                     notifyListeners();
 
                     _userServices.getUserById(user.uid).then((snapshot) {
+                      // User already exists
                       if (snapshot.exists) {
-                        // user already exists
                         if (this.screen == 'Login') {
                           _nav.pushReplacement(
                             context: context,
@@ -139,7 +141,7 @@ class AuthProvider with ChangeNotifier {
                       } else {
                         // user does not exists and needs to be created
                         _createUser(id: user.uid, number: user.phoneNumber);
-                        
+
                         _nav.pushReplacement(
                           context: context,
                           destination: HomeScreen(),
@@ -206,13 +208,13 @@ class AuthProvider with ChangeNotifier {
   }
 
   //check if user is logged in when viewing map, if not he would denied access
-  // void isPermitted() {
-  //   if (_user == null) {
-  //     locationData.permissionAllowed = false;
-  //     notifyListeners();
-  //   } else {
-  //     locationData.permissionAllowed = true;
-  //     notifyListeners();
-  //   }
-  // }
+  void isPermitted() {
+    if (_user.uid == null) {
+      _isLoggedIn = false;
+      notifyListeners();
+    } else {
+      _isLoggedIn = true;
+      notifyListeners();
+    }
+  }
 }
