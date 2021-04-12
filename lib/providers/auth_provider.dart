@@ -2,12 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:foodio/helper/navigator.dart';
+import 'package:foodio/models/user_model.dart';
 import 'package:foodio/providers/location_provider.dart';
 import 'package:foodio/screens/Home/home_screen.dart';
 import 'package:foodio/services/user_service.dart';
 
 class AuthProvider with ChangeNotifier {
-  LocationProvider locationData = LocationProvider();
   String smsOtp;
   String verificationId;
   String error = "";
@@ -22,12 +22,15 @@ class AuthProvider with ChangeNotifier {
   Nav _nav = Nav();
   bool _isLoggedIn = false;
   UserServices _userServices = UserServices();
+  UserModel _userModel;
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   // getters
   bool get isLoggedIn => _isLoggedIn;
   User get user => _user;
+  UserModel get userModel => _userModel;
 
+  
   // function to verify if OTP and phone number matches the one in firebase
   Future<void> verifyPhone({
     BuildContext context,
@@ -125,7 +128,7 @@ class AuthProvider with ChangeNotifier {
 
                     _userServices.getUserById(user.uid).then((snapshot) {
                       // User already exists
-                      if (snapshot.exists) {
+                      if (snapshot != null) {
                         if (this.screen == 'Login') {
                           _nav.pushReplacement(
                             context: context,
@@ -194,12 +197,15 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Get user by id from firestore
+
   // function resposible for getting current user to the provider
-  void getCurrentUser() {
+  Future<void> getCurrentUser() async {
     User user = _auth.currentUser;
     if (user != null) {
       _isLoggedIn = true;
       this._user = user;
+      _userModel = await _userServices.getUserById(_user.uid);
       notifyListeners();
     } else {
       _isLoggedIn = false;

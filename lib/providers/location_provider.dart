@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:foodio/helper/navigator.dart';
+import 'package:foodio/models/user_model.dart';
+import 'package:foodio/providers/auth_provider.dart';
 import 'package:foodio/screens/welcome_screen.dart';
 import 'package:foodio/services/user_service.dart';
 import 'package:geocoder/geocoder.dart';
@@ -24,6 +26,8 @@ class LocationProvider with ChangeNotifier {
   GoogleMapController mapController;
 
   UserServices _userServices = UserServices();
+  UserModel _userModel;
+  AuthProvider _authProvider;
   User user = FirebaseAuth.instance.currentUser;
   Nav _nav = Nav();
 
@@ -39,9 +43,9 @@ class LocationProvider with ChangeNotifier {
   double get userLongitude => this._userLongitude;
   bool get locating => _locating;
 
-  // constructor
-  LocationProvider() {
-    getPrefs();
+  //
+  LocationProvider.initialize() {
+    getUserModel();
   }
 
   Future<Position> getCurrenPositionfromDB() async {
@@ -120,18 +124,8 @@ class LocationProvider with ChangeNotifier {
   }
 
   // Function to get latlng from firestore
-  Future<bool> getLatLng() {
-    return _userServices.getUserById(user.uid).then((snapshot) {
-      if (snapshot.data()['id'] != null) {
-        _userLatitude = snapshot.data()['latitude'];
-        _userLongitude = snapshot.data()['longitude'];
-        print("$_userLatitude user latitude");
-        return true;
-      } else {
-        print("Error");
-        return false;
-      }
-    });
+  getUserModel() async {
+    _userModel = await _userServices.getUserById(user.uid);
   }
 
   // function to get LatLng of vendors from firestore
@@ -152,19 +146,21 @@ class LocationProvider with ChangeNotifier {
 
   // Function to get distance between user and vendors
   String getDistance(location) {
-    getLatLng().then((value) {
-      double distance = Geolocator.distanceBetween(
-        _userLatitude,
-        userLongitude,
-        location.latitude,
-        location.longitude,
-      );
-      print("$_userLatitude user real lat");
-      double distanceKm = distance / 1000;
-      print("the real distance $distanceKm");
-      vendorDistance = distanceKm;
-    });
-    return vendorDistance.toStringAsFixed(2);
+    getUserModel();
+
+    double distanceKm = 9;
+    double distance = Geolocator.distanceBetween(
+      _userModel.latitude,
+      _userModel.longitude,
+      location.latitude,
+      location.longitude,
+    );
+    distanceKm = distance / 1000;
+    print("sdfsdfsdf $distanceKm");
+    loading = true;
+    notifyListeners();
+    print("sdfsdfsdfsf $loading");
+    return distanceKm.toStringAsFixed(2);
   }
 }
 

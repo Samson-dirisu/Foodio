@@ -16,7 +16,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => LocationProvider()),
+        ChangeNotifierProvider(create: (_) => LocationProvider.initialize()),
         ChangeNotifierProvider(create: (_) => AppProvider()),
       ],
       builder: (context, child) {
