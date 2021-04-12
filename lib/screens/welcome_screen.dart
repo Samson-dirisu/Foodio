@@ -185,7 +185,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             setState(() {
                               locationData.loading = true;
                             });
-                            await locationData.getCurrenPosition();
+                            await locationData.getCurrenPositionfromDB();
                             if (locationData.permissionAllowed) {
                               Navigator.pushReplacementNamed(
                                   context, MapScreen.id);

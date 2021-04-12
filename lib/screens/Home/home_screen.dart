@@ -18,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Nav _nav = Nav();
-  AuthProvider _authData = AuthProvider();
 
   @override
   Widget build(BuildContext context) {

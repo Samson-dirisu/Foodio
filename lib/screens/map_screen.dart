@@ -145,9 +145,8 @@ class _MapScreenState extends State<MapScreen> {
                               authProvider.isPermitted();
                               if (authProvider.isLoggedIn == false) {
                                 _nav.push(
-                                  context: context,
-                                  destination: LoginScreen(),
-                                );
+                                    context: context,
+                                    destination: LoginScreen());
                               }
                               // if not logged in, save lat, lng and address to variables
                               else {

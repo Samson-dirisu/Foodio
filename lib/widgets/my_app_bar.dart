@@ -53,7 +53,7 @@ class _MyAppBarState extends State<MyAppBar> {
           ],
         ),
         onPressed: () {
-          _locationProvider.getCurrenPosition().then((position) {
+          _locationProvider.getCurrenPositionfromDB().then((position) {
             if (position != null) {
               if (_locationProvider.permissionAllowed) {
                 _nav.push(context: context, destination: MapScreen());

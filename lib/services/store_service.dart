@@ -4,7 +4,7 @@ class StoreServices {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String collection = "vendors";
 
- Stream<QuerySnapshot> getTopPickedStore() {
+  Stream<QuerySnapshot> getTopPickedStore() {
     return _firestore
         .collection(collection)
         .where("accVerified", isEqualTo: true)
